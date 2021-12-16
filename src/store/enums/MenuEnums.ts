@@ -6,4 +6,19 @@ const Paths = {
   HOME: "Home",
 };
 
-export { Paths };
+const Menu = [
+  {
+    path: "Home",
+    title: "Home"
+  },
+  {
+    path: "Portfolio",
+    title: "Portfolio"
+  },
+  {
+    path: "Projects",
+    title: "Projects"
+  },
+]
+
+export { Paths, Menu };

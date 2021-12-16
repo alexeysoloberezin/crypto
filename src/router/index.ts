@@ -23,6 +23,11 @@ const routes: Array<RouteRecordRaw> = [
     name: Paths.LOGOUT,
     component: () => import("@/views/auth/Logout.vue"),
   },
+  {
+    path: "/account",
+    name: Paths.ACCOUNT,
+    component: () => import("@/views/Account/Account.vue"),
+  },
 ];
 
 const router = createRouter({
