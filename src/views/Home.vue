@@ -46,18 +46,19 @@
   </table>
 </template>
 
-<script>
+<script lang="ts">
 import {onBeforeUnmount, onMounted, ref} from "vue";
-import axios from "axios";
-import { calcChange } from "../core/helpers/calcChange"
-import { numberWithCommas } from "../core/helpers/numberWithCommas"
+import {TotalVol} from "../store/modules/CryptoCompareModule";
+import {Actions} from "@/store/enums/StoreEnums";
+import {useStore} from "vuex";
+import {createToast} from "mosha-vue-toastify";
 
 export default {
   name: "Home",
   setup() {
-    const apiKey = 'b71df4c1842f49d6f5652e044f9ea698aed44c890f10d1565ffedce3599a98ed'
-    let getCoinListInterval = null;
-    const data = ref(null)
+    const store = useStore()
+    let getCoinListInterval: any = null;
+    const data = ref<TotalVol[] | []>([])
     const tableHeader = [
       { title: '#' },
       { title: 'Name' },
@@ -70,28 +71,22 @@ export default {
 
     onMounted(() => {
       const getCoinList = () => {
-        axios.get('https://min-api.cryptocompare.com/data/top/totalvolfull?limit=10&tsym=USD', {
-          authorization: `Apikey ${process.env.VUE_APP_API_KEY_CRYPTO_COMPARE}`
-        }).then((res) => {
-          data.value =  res.data.Data.map(item => {
-            return {
-              id: item.CoinInfo.ImageUrl,
-              img: 'https://www.cryptocompare.com' + item?.CoinInfo?.ImageUrl,
-              fullName: item?.CoinInfo?.FullName ? item.CoinInfo.FullName : "-",
-              name: item?.CoinInfo?.Name ? item.CoinInfo.Name : "-",
-              price: item?.RAW?.USD?.PRICE ? item.RAW.USD.PRICE : "-",
-              change24h: item?.RAW?.USD?.CHANGE24HOUR && item?.RAW?.USD?.PRICE ? calcChange( item.RAW.USD.CHANGE24HOUR , item.RAW.USD.PRICE ) : "-",
-              change7d: item?.RAW?.USD?.CHANGEDAY && item?.RAW?.USD?.PRICE ? calcChange(item.RAW.USD.CHANGEDAY, item.RAW.USD.PRICE ) : "-",
-              maxSupply: item?.CoinInfo?.MaxSupply ? item.CoinInfo.MaxSupply : "-",
-              marketcap: item?.RAW?.USD?.MKTCAP ? numberWithCommas(item.RAW.USD.MKTCAP) : "-"
-            }
+        store.dispatch(Actions.TOTAL_VOL_FULL)
+          .then(() => {
+            data.value = store.getters.getTotalVol
           })
-        }).catch((res) => {
-          debugger
+          .catch(() => {
+            createToast(store.getters.CryptoCompareError,
+            {
+              position: 'bottom-left',
+              type: 'danger',
+              transition: 'bounce',
+              showIcon: true
+          })
         })
       }
       getCoinList()
-      getCoinListInterval = setInterval( getCoinList, 2000)
+      getCoinListInterval = setInterval( getCoinList, 1000)
     })
 
     onBeforeUnmount(() => {

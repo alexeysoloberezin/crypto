@@ -10,16 +10,22 @@
         </router-link>
       </li>
     </ul>
+
    <div class="header__right">
      <div class="header__currency d-flex aic">
       <div>
-        USD/RUB: 79
+        USD/{{ сurrencyType.value }}: 79
       </div>
        <it-divider vertical />
        <div>
-         EUR/RUB: 83
+         EUR/{{ сurrencyType.value }}: 83
        </div>
      </div>
+
+     <it-select
+         v-model="сurrencyType"
+         :options="сurrencyTypes"
+     />
      <div class="btns-login d-flex" v-if="!isAuth">
        <it-button type="success" outlined>
          <router-link
@@ -47,10 +53,12 @@
 </template>
 
 <script lang="ts">
-import {computed, defineComponent, onMounted, ref, watchEffect} from "vue";
+import { defineComponent, onMounted, ref, watchEffect} from "vue";
 import {useStore} from "vuex";
 import {Mutations} from "@/store/enums/StoreEnums";
 import { Menu } from "@/store/enums/MenuEnums"
+import { сurrencyTypes } from "@/core/helpers/сurrencyTypes"
+import {currencyType} from "@/store/modules/GlobalModule";
 
 export default defineComponent({
   name: "Header",
@@ -58,7 +66,15 @@ export default defineComponent({
     const store = useStore();
     const isAuth = ref(store.getters.currentUser);
     const menu = ref(Menu)
+    const сurrencyType = ref<currencyType>(store.getters.getCurrencyType)
+
+    watchEffect(() => {
+      store.commit(Mutations.SET_CURRENCY_TYPE, сurrencyType.value)
+    })
+
     onMounted(() => {
+      сurrencyType.value = store.getters.getCurrencyType
+
       store.subscribe((mutation => {
         if (mutation.type === Mutations.PURGE_AUTH || mutation.type === Mutations.SET_AUTH) {
           isAuth.value = store.getters.currentUser
@@ -68,6 +84,8 @@ export default defineComponent({
 
     return {
       isAuth,
+      сurrencyType,
+      сurrencyTypes,
       menu
     };
   },
