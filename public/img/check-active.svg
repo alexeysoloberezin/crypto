@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="60" height="60" viewBox="0 0 60 60">
+  <defs>
+    <linearGradient id="linear-gradient" x1="0.867" y1="0.104" x2="0.139" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#3e434e"/>
+      <stop offset="1" stop-color="#301292"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0.984" y1="0.071" x2="0.071" y2="0.957" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#02e494"/>
+      <stop offset="1" stop-color="#12b07e"/>
+    </linearGradient>
+    <filter id="Oval" x="0" y="0" width="60" height="60" filterUnits="userSpaceOnUse">
+      <feOffset input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feFlood flood-color="#23262b"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Oval-2" data-name="Oval" transform="translate(1216 2899)">
+    <circle id="Oval-3" data-name="Oval" cx="15" cy="15" r="15" transform="translate(-1201 -2884)" fill="none"/>
+    <g id="Oval-4" data-name="Oval" transform="translate(-1201 -2884)" stroke="#0cc486" stroke-miterlimit="10" stroke-width="2" fill="url(#linear-gradient)">
+      <circle cx="15" cy="15" r="15" stroke="none"/>
+      <circle cx="15" cy="15" r="14" fill="none"/>
+    </g>
+  </g>
+  <g transform="matrix(1, 0, 0, 1, 0, 0)" filter="url(#Oval)">
+    <g id="Oval-5" data-name="Oval" transform="translate(18 18)" stroke="#707070" stroke-miterlimit="10" stroke-width="1" fill="url(#linear-gradient-2)">
+      <circle cx="12" cy="12" r="12" stroke="none"/>
+      <circle cx="12" cy="12" r="11.5" fill="none"/>
+    </g>
+  </g>
+</svg>
