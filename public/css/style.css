@@ -20,6 +20,7 @@ select:-webkit-autofill:focus {
 #app {
     background: rgba(10,14,19 , .85);
     min-height: 100vh;
+    padding-bottom: 250px;
 }
 #app::before{
     content: '';
@@ -84,6 +85,31 @@ button{
 .rotate180{
     transform: rotate(180deg);
 }
+.pagination{
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+.VuePagination__count{
+    display: none;
+}
+.pagination button{
+    background: none;
+    border: 1px solid rgba(0, 70, 19, 0);
+    padding: 5px;
+    cursor: pointer;
+    margin: 0 2px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: .15s;
+}
+.pagination .page-link.active{
+    background: #07d85b;
+}
 .table{
     width: 100%;
 }
@@ -94,6 +120,16 @@ button{
 }
 .table span {
     font-size: 14px !important;
+}
+.table-box{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+.table-box .it-select{
+    margin-left: auto;
+
 }
 .nav{
     display: flex;

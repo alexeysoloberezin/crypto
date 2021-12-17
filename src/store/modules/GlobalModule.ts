@@ -13,7 +13,7 @@ export interface GlobalModuleInt {
 @Module
 export default class GlobalModule extends VuexModule implements GlobalModuleInt  {
     currencyType = {
-        name: "USD",
+        name: "$ - USD",
         value: "USD"
     }
 

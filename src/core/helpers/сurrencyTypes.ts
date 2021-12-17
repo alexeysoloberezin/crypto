@@ -1,14 +1,14 @@
 export const сurrencyTypes = [
     {
-        name: 'USD',
+        name: '$ - USD',
         value: 'USD',
     },
     {
-        name: 'RUB',
+        name: '₽ - RUB',
         value: 'RUB',
     },
     {
-        name: 'EUR',
+        name: '€ -EUR',
         value: 'EUR',
     },
 ]

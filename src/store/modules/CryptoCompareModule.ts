@@ -51,33 +51,36 @@ export default class CryptoCompareModule extends VuexModule implements CryptoCom
     }
 
     @Action
-    [Actions.TOTAL_VOL_FULL]() {
+    [Actions.TOTAL_VOL_FULL](data) {
         const currencyType = store.getters.getCurrencyType.value
 
         return new Promise<void>((resolve, reject) => {
-            (<any>ApiService).get(`https://min-api.cryptocompare.com/data/top/totalvolfull?limit=10&tsym=${currencyType}&api_key=${process.env.VUE_APP_API_KEY_CRYPTO_COMPARE}`)
+            (<any>ApiService).get(`https://min-api.cryptocompare.com/data/top/totalvolfull?limit=${data.limit}&tsym=${currencyType}&page=${data.page}&api_key=${process.env.VUE_APP_API_KEY_CRYPTO_COMPARE}`)
                 .then((res) => {
-                    const data =  res.data.Data.map(item => {
+                    console.log('res', res)
+                    const tableData =  res.data.Data.map((item, inx) => {
                         return {
                             id: item.CoinInfo.Id,
+                            index: inx + (data.limit * data.page) + 1,
                             img: 'https://www.cryptocompare.com' + item?.CoinInfo?.ImageUrl,
                             fullName: item?.CoinInfo?.FullName ? item.CoinInfo.FullName : "-",
                             name: item?.CoinInfo?.Name ? item.CoinInfo.Name : "-",
-                            price: item?.RAW[currencyType]?.PRICE ? item.RAW[currencyType].PRICE : "-",
+                            price: item?.RAW[currencyType]?.PRICE ? numberWithCommas(item.RAW[currencyType].PRICE) : "-",
 
                             change24h: item?.RAW[currencyType]?.CHANGE24HOUR && item?.RAW[currencyType]?.PRICE ?
                                 calcChange( item.RAW[currencyType].CHANGE24HOUR , item.RAW[currencyType].PRICE ) : "-",
 
                             change7d: item?.RAW[currencyType]?.CHANGEDAY && item?.RAW[currencyType]?.PRICE ?
-                                calcChange(item.RAW[currencyType].CHANGEDAY, item.RAW[currencyType].PRICE ) : "-",
+                                calcChange(item.RAW[currencyType]?.CHANGEDAY, item.RAW[currencyType].PRICE ) : "-",
 
                             maxSupply: item?.CoinInfo?.MaxSupply ? item.CoinInfo.MaxSupply : "-",
                             marketcap: item?.RAW[currencyType]?.MKTCAP ? numberWithCommas(item.RAW[currencyType].MKTCAP) : "-"
                         }
                     })
-                    this.context.commit(Mutations.SAVE_TOTAL_VOL_FULL, data)
+                    this.context.commit(Mutations.SAVE_TOTAL_VOL_FULL, tableData)
                     resolve()
                 }).catch((res) => {
+                    debugger
                     console.log('res 2', res)
                      this.context.commit(Mutations.SET_CRYPTO_COMPARE_ERROR, res.message)
                     reject()

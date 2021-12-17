@@ -3,8 +3,8 @@
     <tr >
       <th v-for="row in tableHeader" :key="row.title">{{ row.title }}</th>
     </tr>
-    <tr v-for="(item, inx) in data" :key="item.id">
-      <th>{{ inx }}</th>
+    <tr v-for="item in data" :key="item.id">
+      <th>{{ item.index }}</th>
       <th>
         <div class="d-flex aic coin-name">
           <span class="coin-icon">
@@ -15,7 +15,7 @@
         </div>
       </th>
       <th>
-        {{ item.price }} $
+        {{ item.price }} {{ currency }}
       </th>
 
       <th  :class="{
@@ -41,24 +41,37 @@
           {{ item.change7d }} %
         </span>
       </th>
-      <th>{{ item.marketcap }}  $</th>
+      <th>{{ item.marketcap }} {{currency }}</th>
     </tr>
   </table>
+  <div class="table-box">
+    <pagination class="pagination" v-model="page" :records="40" :per-page="limit" @paginate="myCallback"/>
+    <it-select
+        label-bottom="List limit"
+        v-model="limit"
+        :options="limitOptions"
+    />
+  </div>
 </template>
 
-<script lang="ts">
+<script >
 import {onBeforeUnmount, onMounted, ref} from "vue";
-import {TotalVol} from "../store/modules/CryptoCompareModule";
 import {Actions} from "@/store/enums/StoreEnums";
 import {useStore} from "vuex";
 import {createToast} from "mosha-vue-toastify";
+import Pagination from 'v-pagination-3';
+import {changerCurrency} from "../core/helpers/changerCurrency";
+import {Mutations} from "../store/enums/StoreEnums";
 
 export default {
   name: "Home",
+  components: {
+    Pagination
+  },
   setup() {
     const store = useStore()
-    let getCoinListInterval: any = null;
-    const data = ref<TotalVol[] | []>([])
+    let getCoinListInterval = null;
+    const data = ref([])
     const tableHeader = [
       { title: '#' },
       { title: 'Name' },
@@ -67,11 +80,23 @@ export default {
       { title: '7d%' },
       { title: 'Market Cap' },
     ]
-    const baseIndex = ref(0)
+    const page = ref(1)
+    const limit = ref(20)
+    const limitOptions = ref([5,10,15,20, 40])
+    const currency = ref(changerCurrency(store.getters.getCurrencyType.value))
 
     onMounted(() => {
+      store.subscribe((mutation => {
+        if (mutation.type === Mutations.SET_CURRENCY_TYPE) {
+          currency.value = changerCurrency(store.getters.getCurrencyType.value)
+        }
+      }))
+
       const getCoinList = () => {
-        store.dispatch(Actions.TOTAL_VOL_FULL)
+        store.dispatch(Actions.TOTAL_VOL_FULL, {
+         page: page.value - 1,
+         limit: limit.value
+        })
           .then(() => {
             data.value = store.getters.getTotalVol
           })
@@ -93,9 +118,18 @@ export default {
       clearInterval(getCoinListInterval)
     })
 
+    const myCallback = (selectPage) => {
+      page.value = selectPage
+    }
+
     return {
       data,
-      tableHeader
+      tableHeader,
+      myCallback,
+      limit,
+      limitOptions,
+      page,
+      currency,
     }
   }
 }
