@@ -44,13 +44,14 @@
              to="/sign-in"
          >Sign-in</router-link>
        </it-button>
-       <it-button type="success">
+       <it-button type="success" >
          <router-link
              to="/sign-up"
          >Sign-up</router-link>
        </it-button>
      </div>
-     <div class="btns-logout d-flex" v-else>
+     <div class="btns-logout d-flex aic" v-else>
+       <it-divider vertical />
        <router-link class="avatar" to="/account">
          <it-avatar />
        </router-link>

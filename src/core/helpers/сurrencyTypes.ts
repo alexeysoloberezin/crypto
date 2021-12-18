@@ -8,7 +8,7 @@ export const сurrencyTypes = [
         value: 'RUB',
     },
     {
-        name: '€ -EUR',
+        name: '€ - EUR',
         value: 'EUR',
     },
 ]

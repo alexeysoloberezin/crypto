@@ -4,6 +4,7 @@ const Paths = {
   LOGOUT: "Logout",
   ACCOUNT: "Account",
   HOME: "Home",
+  NEWS: "News"
 };
 
 const Menu = [
@@ -18,6 +19,10 @@ const Menu = [
   {
     path: "Projects",
     title: "Projects"
+  },
+  {
+    path: "News",
+    title: "News"
   },
 ]
 
