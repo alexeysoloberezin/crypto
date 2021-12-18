@@ -13,13 +13,25 @@
 
    <div class="header__right">
      <div class="header__currency d-flex aic">
-      <div>
-        USD/{{ сurrencyType.value }}: 79
-      </div>
+       <template v-if="prices.USD && prices.USD !== 1">
+         <it-divider vertical />
+         <div >
+           USD/{{ сurrencyType.value }}: {{ prices.USD }}
+         </div>
+       </template>
+       <template v-if="prices.EUR && prices.EUR !== 1">
+         <it-divider vertical />
+         <div >
+           EUR/{{ сurrencyType.value }}: {{ prices.EUR }}
+         </div>
+       </template>
+       <template  v-if="prices.RUB && prices.RUB !== 1">
+         <it-divider vertical />
+         <div>
+           RUB/{{ сurrencyType.value }}: {{ prices.RUB }}
+         </div>
+       </template>
        <it-divider vertical />
-       <div>
-         EUR/{{ сurrencyType.value }}: 83
-       </div>
      </div>
 
      <it-select
@@ -59,6 +71,7 @@ import {Mutations} from "@/store/enums/StoreEnums";
 import { Menu } from "@/store/enums/MenuEnums"
 import { сurrencyTypes } from "@/core/helpers/сurrencyTypes"
 import {currencyType} from "@/store/modules/GlobalModule";
+import axios from "axios";
 
 export default defineComponent({
   name: "Header",
@@ -68,6 +81,12 @@ export default defineComponent({
     const menu = ref(Menu)
     const сurrencyType = ref<currencyType>(store.getters.getCurrencyType)
 
+    const prices = ref({
+      EUR: null,
+      RUB: null,
+      USD: null,
+    })
+
     watchEffect(() => {
       store.commit(Mutations.SET_CURRENCY_TYPE, сurrencyType.value)
     })
@@ -75,9 +94,25 @@ export default defineComponent({
     onMounted(() => {
       сurrencyType.value = store.getters.getCurrencyType
 
+      const setPrices = () => {
+        const arr = ['USD', 'RUB', 'EUR']
+
+        arr.forEach(item => {
+          axios.get(`https://min-api.cryptocompare.com/data/price?fsym=${item}&tsyms=${store.getters.getCurrencyType.value}&api_key=${process.env.VUE_APP_API_KEY_CRYPTO_COMPARE}`)
+            .then(({ data }) => {
+              prices.value[item] = data[store.getters.getCurrencyType.value]
+            })
+        })
+      }
+      setPrices()
+
+
       store.subscribe((mutation => {
         if (mutation.type === Mutations.PURGE_AUTH || mutation.type === Mutations.SET_AUTH) {
           isAuth.value = store.getters.currentUser
+        }
+        if (mutation.type === Mutations.SET_CURRENCY_TYPE ) {
+          setPrices()
         }
       }))
     })
@@ -86,6 +121,7 @@ export default defineComponent({
       isAuth,
       сurrencyType,
       сurrencyTypes,
+      prices,
       menu
     };
   },

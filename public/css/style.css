@@ -74,6 +74,10 @@ button{
     height: var(--heightHeader);
     margin-bottom: 40px;
 }
+.header__currency *{
+    font-size: 14px;
+    opacity: 0.8;
+}
 .header__right{
     display: flex;
     align-items: center;

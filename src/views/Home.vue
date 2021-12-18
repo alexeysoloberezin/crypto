@@ -45,7 +45,7 @@
     </tr>
   </table>
   <div class="table-box">
-    <pagination class="pagination" v-model="page" :records="40" :per-page="limit" @paginate="myCallback"/>
+    <pagination class="pagination" v-model="page" :records="500" :per-page="limit" @paginate="myCallback"/>
     <it-select
         label-bottom="List limit"
         v-model="limit"
@@ -62,6 +62,7 @@ import {createToast} from "mosha-vue-toastify";
 import Pagination from 'v-pagination-3';
 import {changerCurrency} from "../core/helpers/changerCurrency";
 import {Mutations} from "../store/enums/StoreEnums";
+import axios from "axios";
 
 export default {
   name: "Home",
@@ -82,7 +83,7 @@ export default {
     ]
     const page = ref(1)
     const limit = ref(20)
-    const limitOptions = ref([5,10,15,20, 40])
+    const limitOptions = ref([10,15,20, 40, 50, 75, 100])
     const currency = ref(changerCurrency(store.getters.getCurrencyType.value))
 
     onMounted(() => {
@@ -91,6 +92,7 @@ export default {
           currency.value = changerCurrency(store.getters.getCurrencyType.value)
         }
       }))
+
 
       const getCoinList = () => {
         store.dispatch(Actions.TOTAL_VOL_FULL, {

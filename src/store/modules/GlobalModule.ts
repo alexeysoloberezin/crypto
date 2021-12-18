@@ -1,5 +1,9 @@
-import {  Mutations } from "@/store/enums/StoreEnums";
-import { Module, Mutation, VuexModule } from "vuex-module-decorators";
+import {Actions, Mutations} from "@/store/enums/StoreEnums";
+import {Action, Module, Mutation, VuexModule} from "vuex-module-decorators";
+import store from "@/store";
+import ApiService from "@/core/services/ApiService";
+import {calcChange} from "@/core/helpers/calcChange";
+import {numberWithCommas} from "@/core/helpers/numberWithCommas";
 
 export interface currencyType {
     name: string;
