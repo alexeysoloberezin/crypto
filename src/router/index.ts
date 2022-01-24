@@ -23,6 +23,16 @@ const routes: Array<RouteRecordRaw> = [
     name: Paths.LOGOUT,
     component: () => import("@/views/auth/Logout.vue"),
   },
+  {
+    path: "/account",
+    name: Paths.ACCOUNT,
+    component: () => import("@/views/Account/Account.vue"),
+  },
+  {
+    path: "/News",
+    name: Paths.NEWS,
+    component: () => import("@/views/News/News.vue"),
+  },
 ];
 
 const router = createRouter({

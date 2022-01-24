@@ -2,15 +2,32 @@ import ApiService from "@//core/services/ApiService";
 import JwtService from "@//core/services/JwtService";
 import { Actions, Mutations } from "@/store/enums/StoreEnums";
 import { Module, Action, Mutation, VuexModule } from "vuex-module-decorators";
-import SpotifyToken from "@/core/services/SpotifyToken";
-import { useRouter } from "vue-router";
-
 
 export interface UserAuthInfo {
   error: string;
   isAuthenticated: boolean;
   userCreated: string;
 }
+
+type User = {
+  login: string;
+  password: string;
+  token: string;
+};
+
+// mock testing user accounts
+export const users: Array<User> = [
+  {
+    login: "Alex",
+    password: "pass",
+    token: "mgfi5juf74j",
+  },
+  {
+    login: "admin2@demo.com",
+    password: "demo",
+    token: "fgj8fjdfk43",
+  },
+];
 
 @Module
 export default class AuthModule extends VuexModule implements UserAuthInfo {
@@ -74,18 +91,20 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
   @Action
   [Actions.LOGIN](credentials) {
     return new Promise<void>((resolve, reject) => {
-      ApiService.post(
-          process.env.VUE_APP_ROUTEROOT + "/login",
-        credentials
-      )
-        .then((res) => {
-          this.context.commit(Mutations.SET_AUTH, res.data);
-          resolve();
-        })
-        .catch(({ response }) => {
-          this.context.commit(Mutations.SET_ERROR, response.data.errors[0]);
-          reject();
-        });
+      const found = users.find((user) => {
+        return (
+            credentials.login === user.login &&
+            credentials.password === user.password
+        );
+      });
+      if (found) {
+        this.context.commit(Mutations.SET_AUTH, found);
+        resolve()
+      }else{
+        const errors = "The login detail is incorrect"
+        this.context.commit(Mutations.SET_ERROR, errors);
+        reject();
+      }
     });
   }
 
@@ -97,18 +116,21 @@ export default class AuthModule extends VuexModule implements UserAuthInfo {
   @Action
   [Actions.REGISTER](credentials) {
     return new Promise<void>((resolve, reject) => {
-      ApiService.post(
-          process.env.VUE_APP_ROUTEROOT + "/registration",
-        credentials
-      )
-        .then((res) => {
-          this.context.commit(Mutations.SET_USER_CREATED, res.data.login)
-          resolve();
-        })
-        .catch(({ response }) => {
-          this.context.commit(Mutations.SET_ERROR, response.data.errors[0])
-          reject();
-        });
+      const newUser = credentials;
+      const found = users.find((user) => {
+        return newUser.login === user.login;
+      });
+
+      if(found){
+        const error = "User with this login already exists."
+        this.context.commit(Mutations.SET_ERROR, error);
+        reject();
+      }else{
+        newUser.token = Math.random().toString(36).substr(2, 9);
+        users.push(newUser);
+        this.context.commit(Mutations.SET_USER_CREATED, newUser.login)
+        resolve()
+      }
     });
   }
 
