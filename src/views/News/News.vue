@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import {onMounted, ref, watchEffect} from "vue";
+import {onMounted, ref} from "vue";
 import {useStore} from "vuex";
 import {Actions} from "@/store/enums/StoreEnums";
 import {createToast} from "mosha-vue-toastify";
@@ -91,14 +91,12 @@ export default {
 
     const changeTag = (e) => {
       if (tag.value !== e.target.textContent){
+        tag.value = e.target.textContent
         getNews()
       }
-      tag.value = e.target.textContent
     }
 
     onMounted(() => {
-
-
       getNews()
     })
 

@@ -11,6 +11,17 @@
       </li>
     </ul>
 
+<!--    <div id="demo">-->
+<!--      <it-button type="success" outlined @click="onComplete">-->
+<!--        Connect wallet-->
+<!--      </it-button>-->
+<!--      <vue-metamask-->
+<!--          userMessage="hello"-->
+<!--          @onComplete="onComplete"-->
+<!--      >-->
+<!--      </vue-metamask>-->
+<!--    </div>-->
+
    <div class="header__right">
      <div class="header__currency d-flex aic">
        <template v-if="prices.USD && prices.USD !== 1">
@@ -65,7 +76,7 @@
   </header>
 </template>
 
-<script lang="ts">
+<script>
 import { defineComponent, onMounted, ref, watchEffect} from "vue";
 import {useStore} from "vuex";
 import {Mutations} from "@/store/enums/StoreEnums";
@@ -73,14 +84,28 @@ import { Menu } from "@/store/enums/MenuEnums"
 import { сurrencyTypes } from "@/core/helpers/сurrencyTypes"
 import {currencyType} from "@/store/modules/GlobalModule";
 import axios from "axios";
+// import VueMetamask from 'vue-metamask';
 
 export default defineComponent({
   name: "Header",
+  components: {
+    // VueMetamask
+  },
+  data(){
+    return {
+      msg: "This is demo net work"
+    }
+  },
+  methods:{
+    onComplete(data){
+      console.log('data:', data);
+    }
+  },
   setup() {
     const store = useStore();
     const isAuth = ref(store.getters.currentUser);
     const menu = ref(Menu)
-    const сurrencyType = ref<currencyType>(store.getters.getCurrencyType)
+    const сurrencyType = ref(store.getters.getCurrencyType)
 
     const prices = ref({
       EUR: null,
